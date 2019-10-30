@@ -103,14 +103,20 @@ public class SplashActivity extends AppCompatActivity{
                 JSONObject u_m;
                 u_m = map.getJSONObject("user_info");
                 if (!u_m.has("username")) {
-                    Toast.makeText(getApplicationContext(), "Username is incorrect", Toast.LENGTH_LONG).show();
+                    runOnUiThread(()->{
+                        Intent intent =new Intent(this,LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
                 } else {
                     MyApp.created_at = u_m.getString("created_at");
                     MyApp.status = u_m.getString("status");
                     if(!MyApp.status.equalsIgnoreCase("Active")){
-                        Intent intent =new Intent(this,EmptyActivity.class);
-                        intent.putExtra("msg","Your account is Expired");
-                        startActivity(intent);
+                        runOnUiThread(()->{
+                            Intent intent =new Intent(this,LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        });
                         return;
                     }
                     MyApp.is_trail = u_m.getString("is_trial");
@@ -141,26 +147,18 @@ public class SplashActivity extends AppCompatActivity{
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                runOnUiThread(() ->{
-                    Toast.makeText(getApplicationContext(), "Username is incorrect", Toast.LENGTH_LONG).show();
-                } );
+                runOnUiThread(()->{
+                    Intent intent =new Intent(this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
             }
         } catch (Exception e0) {
             e0.printStackTrace();
-            runOnUiThread(() -> {
-                ConnectionDlg connectionDlg = new ConnectionDlg(this, new ConnectionDlg.DialogConnectionListener() {
-                    @Override
-                    public void OnYesClick(Dialog dialog) {
-                        dialog.dismiss();
-                        new Thread(() -> callLogin()).start();
-                    }
-
-                    @Override
-                    public void OnNoClick(Dialog dialog) {
-                        startActivity(new Intent(SplashActivity.this, ConnectionErrorActivity.class));
-                    }
-                },"LOGIN UNSUCCESSFUL PLEASE CHECK YOUR LOGIN DETAILS OR CONTACT YOUR PROVIDER", null, null);
-                connectionDlg.show();
+            runOnUiThread(()->{
+                Intent intent =new Intent(this,LoginActivity.class);
+                startActivity(intent);
+                finish();
             });
         }
     }

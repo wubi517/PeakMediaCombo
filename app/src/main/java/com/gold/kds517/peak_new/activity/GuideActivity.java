@@ -96,7 +96,7 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
     boolean  is_create = true,item_sel = false,is_start = false;
     Handler mHandler = new Handler();
     Runnable mTicker;
-    long current_time,startMill,wrongMedialaanTime=0;
+    long current_time,startMill;
     private Map<String, List<EPGEvent>> map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,17 +193,6 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
         if(epgModelList.size()>0){
             map = getFilteredModels(epgModelList);
             date_datas = new ArrayList<>(map.keySet());
-//            dates = (int) (System.currentTimeMillis()-epgModelList.get(0).getStartTime().getTime()*1000)/(24*3600*1000);
-//            int divide =  (int) (System.currentTimeMillis()-epgModelList.get(0).getEndTime().getTime()*1000)%(24*3600*1000);
-//            if(divide>0){
-//                dates++;
-//            }
-//            date_datas = new ArrayList<>();
-//            for(int i = 0;i<dates;i++){
-//                long millisecond = epgModelList.get(0).getStartTime().getTime()*1000 + i*24*3600*1000;
-//                date_datas.add(getFromDate(millisecond));
-//            }
-
             dateListAdapter = new DateListAdapter(this,date_datas);
             date_list.setAdapter(dateListAdapter);
 
@@ -250,78 +239,6 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return simpleDateFormat.format(calendar.getTime());
     }
-//    private void getEpgData(){
-//        try {
-//            String map = MyApp.instance.getIptvclient().getAllEPGOfStream(MyApp.user,MyApp.pass,mStream_id);
-//            Log.e(getClass().getSimpleName(),map);
-//            map=map.replaceAll("[^\\x00-\\x7F]", "");
-//            if (!map.contains("null_error_response")){
-//                try {
-//                    JSONObject jsonObject= new JSONObject(map);
-//                    JSONArray jsonArray=jsonObject.getJSONArray("epg_listings");
-//                    epgModelList = new ArrayList<>();
-//                    if(jsonArray.length() > 0){
-//                        for(int i = 0;i<jsonArray.length();i++){
-//                            try {
-//                                JSONObject e_p = (JSONObject) jsonArray.get(i);
-//                                EpgModel epgModel = new EpgModel();
-//                                epgModel.setId((String )e_p.get("id"));
-//                                epgModel.setCh_id((String )e_p.get("channel_id"));
-//                                epgModel.setCategory((String )e_p.get("epg_id"));
-//                                epgModel.setT_time((String )e_p.get("start"));
-//                                epgModel.setT_time_to((String )e_p.get("end"));
-//                                byte[] desc_byte = Base64.decode((String )e_p.get("description"), Base64.DEFAULT);
-//                                String desc = new String(desc_byte);
-//                                epgModel.setDescr(desc);
-//                                byte[] title_byte = Base64.decode((String )e_p.get("title"), Base64.DEFAULT);
-//                                String title = new String(title_byte);
-//                                epgModel.setName(title);
-//                                epgModel.setStart_timestamp(e_p.get("start_timestamp").toString());
-//                                epgModel.setStop_timestamp(e_p.get("stop_timestamp").toString());
-//                                int duration = ((Integer.parseInt(e_p.get("stop_timestamp").toString())) - (Integer.parseInt(e_p.get("start_timestamp").toString())));
-//                                epgModel.setDuration(duration);
-//                                if(e_p.has("has_archive")) {
-//                                    Double d = Double.parseDouble(e_p.get("has_archive").toString());
-//                                    epgModel.setMark_archive(d.intValue());
-//                                }
-//                                epgModelList.add(epgModel);
-//                            }catch (Exception e){
-//                                Log.e("error","epg_parse_error");
-//                            }
-//                        }
-//                        runOnUiThread(()->{
-//                            if(epgModelList.size()>0){
-//                                dates = (int) (System.currentTimeMillis()-Long.parseLong(epgModelList.get(0).getStart_timestamp())*1000)/(24*3600*1000);
-//                                int divide =  (int) (System.currentTimeMillis()-Long.parseLong(epgModelList.get(0).getStart_timestamp())*1000)%(24*3600*1000);
-//                                if(divide>0){
-//                                    dates++;
-//                                }
-//                                date_datas = new ArrayList<>();
-//                                for(int i = 0;i<dates;i++){
-//                                    long millisecond = Long.parseLong(epgModelList.get(0).getStart_timestamp())*1000 + i*24*3600*1000;
-//                                    date_datas.add(getFromDate(millisecond));
-//                                }
-//
-//                                dateListAdapter = new DateListAdapter(this,date_datas);
-//                                date_list.setAdapter(dateListAdapter);
-//
-//                                for(int i = 0;i<date_datas.size();i++){
-//                                    if(getFromDate(System.currentTimeMillis()).equalsIgnoreCase(date_datas.get(i))){
-//                                        date_pos = i;
-//                                    }
-//                                }
-//                                dateListAdapter.selectItem(date_pos);
-//                                printEpgData();
-//                            }
-//                        });
-//                    }
-//                }catch (Exception e){
-//                }
-//            }
-//        }catch (Exception e){
-//
-//        }
-//    }
 
     @Override
     public void onClick(View v) {
@@ -389,12 +306,7 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
                     surfaceView = null;
                 }
                 surfaceView = findViewById(R.id.surface_view);
-                wrongMedialaanTime = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
-                try {
-                    startMill = Constants.stampFormat.parse((map.get(date_datas.get(date_pos)).get(selected_num).getT_time())).getTime();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                startMill = map.get(date_datas.get(date_pos)).get(selected_num).getStartTime().getTime();
                 start_time = getFromCatchDate(startMill);
                 duration = map.get(date_datas.get(date_pos)).get(selected_num).getDuration()/60;
                 contentUri = MyApp.instance.getIptvclient().buildCatchupStreamURL(MyApp.user,MyApp.pass,mStream_id,start_time,duration);
@@ -535,12 +447,10 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     public void doWork() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    txt_time.setText(time.format(new Date()));
-                } catch (Exception e) {
-                }
+        runOnUiThread(() -> {
+            try {
+                txt_time.setText(time.format(new Date()));
+            } catch (Exception e) {
             }
         });
     }
@@ -608,12 +518,7 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
                             surfaceView = null;
                         }
                         surfaceView = findViewById(R.id.surface_view);
-                        wrongMedialaanTime = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
-                        try {
-                            startMill = Constants.stampFormat.parse((map.get(date_datas.get(date_pos)).get(selected_num).getT_time())).getTime();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        startMill = map.get(date_datas.get(date_pos)).get(selected_num).getStartTime().getTime();
                         start_time = getFromCatchDate(startMill);
                         duration = map.get(date_datas.get(date_pos)).get(selected_num).getDuration()/60;
                         contentUri = MyApp.instance.getIptvclient().buildCatchupStreamURL(MyApp.user,MyApp.pass,mStream_id,start_time,duration);
@@ -776,6 +681,8 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
             mMediaPlayer.setMedia(m);
             mMediaPlayer.play();
 
+            updateProgressBar();
+
         } catch (Exception e) {
             Toast.makeText(this, "Error in creating player!", Toast
                     .LENGTH_LONG).show();
@@ -901,7 +808,7 @@ public class GuideActivity extends AppCompatActivity implements AdapterView.OnIt
                 if(map.get(date_datas.get(date_pos))!=null && map.get(date_datas.get(date_pos)).size()>0){
                     txt_date.setText(dateFormat.format(new Date()));
                     int pass_min = (int) ((totalDuration - current_time)/(1000*60));
-                    int remain_min = (int)(map.get(date_datas.get(date_pos)).get(selected_num).getDuration()/(60)) - pass_min;
+                    int remain_min = (int)((map.get(date_datas.get(date_pos)).get(selected_num).getEndTime().getTime()-map.get(date_datas.get(date_pos)).get(selected_num).getStartTime().getTime())/60/1000) - pass_min;
                     int progress = pass_min * 100/(pass_min+remain_min);
                     seekbar.setProgress(progress);
                     txt_time_passed.setText("Started " + pass_min +" mins ago");

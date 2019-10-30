@@ -299,8 +299,6 @@ public class PreviewChannelActivity extends AppCompatActivity implements  Adapte
                         String rss_feed = "                 "+ finalMsg +"                 ";
                         if(rss.equalsIgnoreCase(rss_feed)){
                             ly_header.setVisibility(View.GONE);
-//                            image_icon.setVisibility(View.GONE);
-//                            txt_rss.setVisibility(View.GONE);
                             is_rss = false;
                         }else {
                             rss =rss_feed;
