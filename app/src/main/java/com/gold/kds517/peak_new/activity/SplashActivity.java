@@ -625,23 +625,8 @@ public class SplashActivity extends AppCompatActivity{
         return recentChannels;
     }
     private void getAuthorization(){
-        StringRequest request = new StringRequest(Constants.GetAutho1(this), string -> {
-            try {
-                JSONObject object = new JSONObject(string);
-                if (((String) object.get("status")).equalsIgnoreCase("success")) {
-                    startActivity(new Intent(SplashActivity.this,WelcomeActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(SplashActivity.this, "Server Error!", Toast.LENGTH_SHORT).show();
-                }
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
-
-        }, volleyError -> Toast.makeText(getApplicationContext(), "Some error occurred!!", Toast.LENGTH_SHORT).show());
-
-        RequestQueue rQueue = Volley.newRequestQueue(SplashActivity.this);
-        rQueue.add(request);
+        startActivity(new Intent(SplashActivity.this,WelcomeActivity.class));
+        finish();
     }
 
     private CategoryModel getRecentMovies() {

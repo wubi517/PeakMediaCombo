@@ -761,23 +761,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void getAuthorization(){
-        StringRequest request = new StringRequest(Constants.GetAutho1(this), string -> {
-            try {
-                JSONObject object = new JSONObject(string);
-                if (((String) object.get("status")).equalsIgnoreCase("success")) {
-                    startActivity(new Intent(LoginActivity.this,WelcomeActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Server Error!", Toast.LENGTH_SHORT).show();
-                }
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
-
-        }, volleyError -> Toast.makeText(getApplicationContext(), "Some error occurred!!", Toast.LENGTH_SHORT).show());
-
-        RequestQueue rQueue = Volley.newRequestQueue(LoginActivity.this);
-        rQueue.add(request);
+        startActivity(new Intent(LoginActivity.this,WelcomeActivity.class));
+        finish();
     }
 
     public void FullScreencall() {

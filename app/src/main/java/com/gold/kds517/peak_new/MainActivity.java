@@ -133,23 +133,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if (num_server==1){
             getRespond1();
         }
-//        if (MyApp.is_video_played) {
-//            videoView.setVisibility(View.GONE);
-//            main_lay.setVisibility(View.VISIBLE);
-//        }
-//        String path = "android.resource://" + getPackageName() + "/" + R.raw.intro;
-//        videoView.setVideoURI(Uri.parse(path));
-//        videoView.start();
-//        videoView.setOnCompletionListener(mp -> {
-//            MyApp.is_video_played=true;
-//            videoView.setVisibility(View.GONE);
-//            main_lay.setVisibility(View.VISIBLE);
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-//                CheckSDK23Permission();
-//            }else if (num_server==1){
-//                getRespond1();
-//            }
-//        });
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -176,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             server_editor.putString("autho1",(new String(Base64.decode(getFour(),Base64.DEFAULT))));
             Log.e("autho1",new String(Base64.decode(getFour(),Base64.DEFAULT)));
             server_editor.putString("autho2",(new String(Base64.decode(getFive(),Base64.DEFAULT))));
-            Log.e("autho2",new String(Base64.decode(getFive(),Base64.DEFAULT)));        }catch (Exception e){
+            Log.e("autho2",new String(Base64.decode(getFive(),Base64.DEFAULT)));        }
+        catch (Exception e){
             Toast.makeText(MainActivity.this, "Server Error!", Toast.LENGTH_SHORT).show();
         }
     }
